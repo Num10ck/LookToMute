@@ -58,6 +58,9 @@
     <Reference Include="Exiled.Permissions, Version=8.7.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\EXILED.8.7.0\lib\net48\Exiled.Permissions.dll</HintPath>
     </Reference>
+    <Reference Include="MapEditorReborn">
+      <HintPath>..\..\..\..\Documents\DLL\MapEditorReborn.dll</HintPath>
+    </Reference>
     <Reference Include="Mirror">
       <HintPath>..\..\..\..\Documents\DLL\Mirror.dll</HintPath>
     </Reference>

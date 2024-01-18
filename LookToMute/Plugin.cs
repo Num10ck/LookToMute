@@ -7,6 +7,6 @@ namespace LookToMute
     {
         public override string Author => "Num1ock";
         public override string Name => "LookToMute";
-        public override Version Version => new Version(1, 0, 0);
+        public override Version Version => new Version(1, 1, 0);
     }
 }
