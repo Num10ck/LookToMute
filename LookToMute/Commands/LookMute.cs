@@ -14,7 +14,7 @@ namespace LookToMute.Commands
         public string[] Aliases => new string[] { "lm" };
         public string Description => "Mutes player you're looking at";
 
-        private Config config = new Config();
+        private readonly Config config = new Config();
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             Player playerSender = Player.Get(sender);
@@ -25,7 +25,6 @@ namespace LookToMute.Commands
                 return false;
             }
 
-            Debug.DrawRay(playerSender.Position, playerSender.CameraTransform.forward + new Vector3(0, 0, 0.5f), Color.red, 10);
             Ray ray = new Ray(playerSender.CameraTransform.position, playerSender.CameraTransform.forward);
 
             Arguments arg = (Arguments)Enum.Parse(typeof(Arguments), arguments.FirstElement(), true);
@@ -35,7 +34,6 @@ namespace LookToMute.Commands
 
         bool Action(Ray ray, Arguments arg, out string response)
         {
-            
             string responseFunc(Player ply)
             {
                 string state = ply.IsMuted ? "muted" : "unmuted";
@@ -44,33 +42,39 @@ namespace LookToMute.Commands
 
             if (Physics.SphereCast(ray, config.Radius, maxDistance: config.MaxDistance, hitInfo: out RaycastHit hit))
             {
-                if (Player.TryGet(hit.collider, out Player ply))
+                Player ply = Player.Get(hit.collider);
+                switch (arg)
                 {
-                    if (arg == Arguments.Mute)
-                    {
-                        ply.IsMuted = true;
-                        response = responseFunc(ply);
-                        return true;
-                    }
-                    else if (arg == Arguments.Unmute)
-                    {
-                        ply.IsMuted = false;
-                        response = responseFunc(ply);
-                        return true;
-                    }
-                    else
-                    {
-                        if (ply.IsMuted)
-                        {
-                            ply.IsMuted = false;
-                        }
-                        else
+                    case Arguments.Mute:
                         {
                             ply.IsMuted = true;
+                            response = responseFunc(ply);
+                            return true ;
                         }
-                        response = responseFunc(ply);
-                        return true;
-                    }
+                    case Arguments.Unmute:
+                        {
+                            ply.IsMuted = false;
+                            response = responseFunc(ply);
+                            return true;
+                        }
+                    case Arguments.Switch:
+                        {
+                            if (ply.IsMuted)
+                            {
+                                ply.IsMuted = false;
+                            }
+                            else
+                            {
+                                ply.IsMuted = true;
+                            }
+                            response = responseFunc(ply);
+                            return true;
+                        }
+                    default:
+                        {
+                            response = "Incorrect arguments. Avaliable arguments: mute, unmute, switch";
+                            return false;
+                        }
                 }
             }
             response = "No players at view";
